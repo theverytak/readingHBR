@@ -5,7 +5,7 @@ import re
 
 
 def noteng(c):
-    return c in ['—', ',', '[', ']', '(', ')'] or \
+    return c in ['—', ',', '[', ']', '(', ')', '\n', "'", '"'] or \
         c not in [*string.ascii_letters,]
 
 
@@ -16,6 +16,24 @@ def iseng(c):
         *string.punctuation.replace('~', ''),
         '—'
     ]
+
+
+def notengline(l):
+    words = l.split(sep=' ')
+    try:
+        return all([noteng(c) for c in words[0]]) and \
+            all([noteng(c) for c in words[len(words) - 1]])
+    except IndexError:
+        return True
+
+
+def isengline(l):
+    words = l.split(sep=' ')
+    try:
+        return all([iseng(c) for c in words[0]]) and \
+            all([noteng(c) for c in words[len(words) - 1]])
+    except IndexError:
+        return True
 
 
 def available_notes(root='./'):
