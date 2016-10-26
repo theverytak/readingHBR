@@ -44,24 +44,25 @@ class Parser(object):
             return ''
 
     def _parse_content(self, content):
-        # normalize content and split into lines
+        # Normalize content and split into lines
         content = self._normalize_content(content)
         lines = content.splitlines()
 
         # store indicies of lines that has been parsed 
         parsed = set()
+
         # store parsed english-translation tuples
         items = []
 
         for i, line in enumerate(lines):
-            # jump the line if it has been parsed already
+            # Jump the line if it has been parsed already
             if i in parsed:
                 continue
-            # start line reducing process if given line is mixed up with 
+            # Start line reducing process if given line is mixed up with 
             # english and non-english
             elif not ispureline(line):
                 while line:
-                    # take english and reduce content
+                    # Take english and reduce content
                     english = ''\
                         .join(it.takewhile(lambda c: iseng(c), line))\
                         .strip()
@@ -69,10 +70,7 @@ class Parser(object):
                         .join(it.dropwhile(lambda c: iseng(c), line))\
                         .strip()
 
-                    print('============================')
-                    print('english: {}'.format(english))
-
-                    # take translation and reduce content
+                    # Take translation and reduce content
                     translation = ''\
                         .join(it.takewhile(lambda c: noteng(c), line))\
                         .strip()
@@ -83,26 +81,28 @@ class Parser(object):
                     print('============================')
                     print('korean: {}'.format(translation))
 
-                    # append items to the list and mark the line as parsed
+                    # Append items to the list and mark the line as parsed
                     items.append((english, translation))
                     parsed.add(i)
-            # otherwise when the line is pure english or pure non-english
+            # Otherwise when the line is pure english or pure non-english
             else:
-                reduced = it.dropwhile(lambda l: isengline(l), lines[i:])
-                english_lines = it.takewhile(lambda l: isengline(l), lines[i:])
+                # Take english lines and reduce lines
+                english_lines = list(it.takewhile(lambda l: isengline(l), lines[i:]))
                 english = '\n'.join(english_lines).strip()
+                reduced = it.dropwhile(lambda l: isengline(l), lines[i:])
 
-                reduced = it.dropwhile(lambda l: notengline(l), reduced)
-                translation_lines = it.takewhile(lambda l: notengline(l), reduced)
+                # Take translation and reduce lines
+                translation_lines = list(it.takewhile(lambda l: notengline(l), reduced))
                 translation = '\n'.join(translation_lines).strip()
+                reduced = it.dropwhile(lambda l: notengline(l), reduced)
 
-                indicies = list(range(
-                    i, i + len(english_lines) + len(translation_lines)
-                ))
+                # Calculate how far we have parsed through the lines
+                distance = len(list(it.chain(english_lines, translation_lines)))
+                indicies = list(range(i, i + distance))
 
-                # append items to the list and mark lines as parsed
+                # Append items to the list and mark lines as parsed
                 items.append((english, translation))
-                parsed.union(indicies)
+                parsed.update(indicies)
 
         return items
 

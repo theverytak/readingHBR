@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import itertools
 import json
 import os.path
@@ -14,10 +15,10 @@ class Generator(object):
     def __init__(self, root='./'):
         self._root = root
 
-    def generate_quiz(self, targets=None, to=''):
+    def generate_quiz(self, targets=None, to=None):
         to = to or self.DEFAULT_BUILD_PATH
         targets = targets or self.DEFAULT_TARGETS
-        notes = available_notes()
+        notes = available_notes(self._root)
 
         quiz = OrderedDict()
         for note in notes:
@@ -31,5 +32,5 @@ class Generator(object):
                 quiz[name][self.QUIZ_TITLE_KEY] = parser.parse_title(note)
 
         sorted = OrderedDict(reversed(list(quiz.items())))
-        with open(to, 'w', encoding='utf-8') as f:
+        with open(to, 'w', encoding='UTF-8') as f:
             json.dump(sorted, f, indent=4)
