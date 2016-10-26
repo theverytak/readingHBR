@@ -78,9 +78,6 @@ class Parser(object):
                         .join(it.dropwhile(lambda c: noteng(c), line))\
                         .strip()
 
-                    print('============================')
-                    print('korean: {}'.format(translation))
-
                     # Append items to the list and mark the line as parsed
                     items.append((english, translation))
                     parsed.add(i)
