@@ -1,3 +1,15 @@
 # ignore ms word #
 *.doc
 *.docx
+
+# ignore generated quiz data
+.quiz.json
+
+# ignore vim swap files
+*.sw*
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
