@@ -35,19 +35,23 @@
           </section>
 
           {% if '단어' in data %}
-          {% for english, translation in data['단어'].items() %}
+          {% for english, translations in data['단어'].items() %}
           <section>
             {{ english }}
+            {% for translation in translations %}
             <p class="fragment">{{ translation }}</p>
+            {% endfor %}
           </section>
           {% endfor %}
           {% endif %}
 
           {% if '문장' in data %}
-          {% for english, translation in data['문장'].items() %}
+          {% for english, translations in data['문장'].items() %}
           <section>
             {{ english }}
+            {% for translation in translations %}
             <p class="fragment">{{ translation }}</p>
+            {% endfor %}
           </section>
           {% endfor %}
           {% endif %}
