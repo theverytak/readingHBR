@@ -62,8 +62,8 @@ def maybe_notengline(l, target=None):
     return (noeng_count / total_count) >= p
 
 
-def ispureline(l):
-    return notengline(l) or isengline(l)
+def ispureline(l, t=None):
+    return notengline(l, t=t) or isengline(l, t=t)
 
 
 def ltakewhile(*args, **kwargs):

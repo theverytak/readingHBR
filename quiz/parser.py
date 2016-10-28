@@ -71,7 +71,7 @@ class Parser(object):
                 continue
             # Start line reducing process if given line is mixed up with 
             # english and non-english
-            elif not ispureline(line):
+            elif not ispureline(line, t=t):
                 while line:
                     # Take english and reduce content
                     english = stakewhile(lambda c: iseng(c), line).strip()
