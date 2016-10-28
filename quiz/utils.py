@@ -2,7 +2,6 @@
 import string
 import os
 import os.path
-import re
 
 
 def noteng(c):
@@ -54,9 +53,3 @@ def maybe_notengline(l, p=0.7):
 
 def ispureline(l):
     return notengline(l) or isengline(l)
-
-
-def available_notes(root='./'):
-    note_regex = re.compile(r'\d+\.\d+.md')
-    return [os.path.join(root, f) for f in os.listdir(root) 
-            if os.path.isfile(f) and note_regex.findall(f)]
