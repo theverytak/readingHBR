@@ -4,8 +4,8 @@ import string
 import os
 import os.path
 from .presets import (
-    MAYBE_HEURISTIC_PROBS,
-    MAYBE_HEURISTIC_DEFAULT_PROB
+    PURITY_HEURISTIC_PROBS,
+    PURITY_HEURISTIC_DEFAULT_PROB
 )
 
 
@@ -45,8 +45,8 @@ def isengline(l, t=None):
 
 
 def maybe_engline(l, target=None):
-    p = MAYBE_HEURISTIC_PROBS.get(target) or \
-        MAYBE_HEURISTIC_DEFAULT_PROB
+    p = PURITY_HEURISTIC_PROBS.get(target) or \
+        PURITY_HEURISTIC_DEFAULT_PROB
 
     eng_count = sum([1 for c in l if iseng(c)])
     total_count = len(l)
@@ -54,8 +54,8 @@ def maybe_engline(l, target=None):
 
 
 def maybe_notengline(l, target=None):
-    p = MAYBE_HEURISTIC_PROBS.get(target) or \
-        MAYBE_HEURISTIC_DEFAULT_PROB
+    p = PURITY_HEURISTIC_PROBS.get(target) or \
+        PURITY_HEURISTIC_DEFAULT_PROB
 
     noeng_count = sum([1 for c in l if noteng(c)])
     total_count = len(l)
