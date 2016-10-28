@@ -23,11 +23,11 @@ class Generator(object):
 
     def generate_quiz(self, targets=None, to=None):
         quiz = OrderedDict()
-        for note in self.available_notes():
+        for note in self._available_notes():
             for target in targets or self.DEFAULT_TARGETS:
                 # set parser and note name
                 parser = Parser(target=target)
-                name = self._parse_note_name(note)
+                name = self._note_name(note)
                 # fill in quiz data
                 quiz[name] = quiz.get(name) or {}
                 quiz[name][target] = parser.parse(note)
@@ -38,7 +38,7 @@ class Generator(object):
         with open(to or self.DEFAULT_BUILD_PATH, 'w', encoding='UTF-8') as f:
             json.dump(sorted, f, indent=4)
 
-    def available_notes(self):
+    def _available_notes(self):
         # recursively find notes from the root directory
         notes = []
         regex = re.compile(self.NOTE_REGEX)
@@ -46,7 +46,7 @@ class Generator(object):
             notes += [os.path.join(root, f) for f in files if regex.findall(f)]
         return notes
 
-    def _parse_note_name(self, path):
+    def _note_name(self, path):
         # split the path into segments and find name segments
         root_segments_len = len(self._root.split(os.path.sep))
         path_segments = path.split(os.path.sep)
