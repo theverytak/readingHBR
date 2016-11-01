@@ -1,8 +1,12 @@
 # -*- coding:utf-8 -*-
+import itertools as it
 import string
 import os
 import os.path
-import re
+from .presets import (
+    PURITY_HEURISTIC_PROBS,
+    PURITY_HEURISTIC_DEFAULT_PROB
+)
 
 
 def noteng(c):
@@ -18,45 +22,61 @@ def iseng(c):
     )
 
 
-def notengline(l):
+def notengline(l, t=None):
     words = l.split(sep=' ')
     try:
         return (
             all([noteng(c) for c in words[0]]) and
             all([noteng(c) for c in words[len(words) - 1]])
-        ) or maybe_notengline(l)
+        ) or maybe_notengline(l, target=t)
     except IndexError:
         return True
 
 
-def isengline(l):
+def isengline(l, t=None):
     words = l.split(sep=' ')
     try:
         return (
             all([iseng(c) for c in words[0]]) and
             all([iseng(c) for c in words[len(words) - 1]])
-        ) or maybe_engline(l)
+        ) or maybe_engline(l, target=t)
     except IndexError:
         return True
 
 
-def maybe_engline(l, p=0.7):
+def maybe_engline(l, target=None):
+    p = PURITY_HEURISTIC_PROBS.get(target) or \
+        PURITY_HEURISTIC_DEFAULT_PROB
+
     eng_count = sum([1 for c in l if iseng(c)])
     total_count = len(l)
     return (eng_count / total_count) >= p
 
 
-def maybe_notengline(l, p=0.7):
+def maybe_notengline(l, target=None):
+    p = PURITY_HEURISTIC_PROBS.get(target) or \
+        PURITY_HEURISTIC_DEFAULT_PROB
+
     noeng_count = sum([1 for c in l if noteng(c)])
     total_count = len(l)
     return (noeng_count / total_count) >= p
 
 
-def ispureline(l):
-    return notengline(l) or isengline(l)
+def ispureline(l, t=None):
+    return notengline(l, t=t) or isengline(l, t=t)
 
 
-def available_notes(root='./'):
-    note_regex = re.compile(r'\d+\.\d+.md')
-    return [os.path.join(root, f) for f in os.listdir(root) 
-            if os.path.isfile(f) and note_regex.findall(f)]
+def ltakewhile(*args, **kwargs):
+    return list(it.takewhile(*args, **kwargs))
+
+
+def ldropwhile(*args, **kwargs):
+    return list(it.dropwhile(*args, **kwargs))
+
+
+def stakewhile(*args, **kwargs):
+    return ''.join(it.takewhile(*args, **kwargs))
+
+
+def sdropwhile(*args, **kwargs):
+    return ''.join(it.dropwhile(*args, **kwargs))

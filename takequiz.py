@@ -7,7 +7,7 @@ from quiz.generator import Generator
 
 init()
 print(Fore.LIGHTYELLOW_EX + 'Generating HBR quiz out of your notes...' + Fore.LIGHTRED_EX)
-generator = Generator()
+generator = Generator(root='./articles')
 generator.generate_quiz()
 print(Fore.LIGHTGREEN_EX + 'Generated HBR quiz successfully' + Style.RESET_ALL)
 print(Fore.LIGHTCYAN_EX + 'Launching HBR quiz on your default browser' + Style.RESET_ALL)

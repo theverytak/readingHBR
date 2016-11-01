@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>HBR Quiz</title>
 
 		<link rel="stylesheet" href="static/vendor/reveal.js/css/reveal.css">
 		<link rel="stylesheet" href="static/vendor/reveal.js/css/theme/black.css">
@@ -31,23 +31,27 @@
 
           <section>
             <h4>{{ data['title'] }}</h4><br/>
-            {{ name.replace('.md', '') }}
+            {{ name }}
           </section>
 
           {% if '단어' in data %}
-          {% for english, translation in data['단어'].items() %}
+          {% for english, translations in data['단어'].items() %}
           <section>
             {{ english }}
+            {% for translation in translations %}
             <p class="fragment">{{ translation }}</p>
+            {% endfor %}
           </section>
           {% endfor %}
           {% endif %}
 
           {% if '문장' in data %}
-          {% for english, translation in data['문장'].items() %}
+          {% for english, translations in data['문장'].items() %}
           <section>
             {{ english }}
+            {% for translation in translations %}
             <p class="fragment">{{ translation }}</p>
+            {% endfor %}
           </section>
           {% endfor %}
           {% endif %}

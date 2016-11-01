@@ -2,7 +2,15 @@
 import itertools as it
 import re
 import os.path
-from .utils import noteng, notengline, iseng, isengline, ispureline
+from .utils import (
+    noteng, notengline, 
+    iseng, isengline, 
+    ispureline,
+    ltakewhile,
+    ldropwhile,
+    stakewhile,
+    sdropwhile,
+)
 
 
 class Parser(object):
@@ -44,6 +52,9 @@ class Parser(object):
             return ''
 
     def _parse_content(self, content):
+        # Alias
+        t = self._target
+
         # Normalize content and split into lines
         content = self._normalize_content(content)
         lines = content.splitlines()
@@ -60,23 +71,15 @@ class Parser(object):
                 continue
             # Start line reducing process if given line is mixed up with 
             # english and non-english
-            elif not ispureline(line):
+            elif not ispureline(line, t=t):
                 while line:
                     # Take english and reduce content
-                    english = ''\
-                        .join(it.takewhile(lambda c: iseng(c), line))\
-                        .strip()
-                    line = ''\
-                        .join(it.dropwhile(lambda c: iseng(c), line))\
-                        .strip()
+                    english = stakewhile(lambda c: iseng(c), line).strip()
+                    line = sdropwhile(lambda c: iseng(c), line).strip()
 
                     # Take translation and reduce content
-                    translation = ''\
-                        .join(it.takewhile(lambda c: noteng(c), line))\
-                        .strip()
-                    line = ''\
-                        .join(it.dropwhile(lambda c: noteng(c), line))\
-                        .strip()
+                    translation = stakewhile(lambda c: noteng(c), line).strip()
+                    line = sdropwhile(lambda c: noteng(c), line).strip()
 
                     # Append items to the list and mark the line as parsed
                     items.append((english, translation))
@@ -84,17 +87,17 @@ class Parser(object):
             # Otherwise when the line is pure english or pure non-english
             else:
                 # Take english lines and reduce lines
-                english_lines = list(it.takewhile(lambda l: isengline(l), lines[i:]))
+                english_lines = ltakewhile(lambda l: isengline(l, t=t), lines[i:])
                 english = '\n'.join(english_lines).strip()
-                reduced = it.dropwhile(lambda l: isengline(l), lines[i:])
+                reduced = it.dropwhile(lambda l: isengline(l, t=t), lines[i:])
 
                 # Take translation and reduce lines
-                translation_lines = list(it.takewhile(lambda l: notengline(l), reduced))
+                translation_lines = ltakewhile(lambda l: notengline(l, t=t), reduced)
                 translation = '\n'.join(translation_lines).strip()
-                reduced = it.dropwhile(lambda l: notengline(l), reduced)
+                reduced = it.dropwhile(lambda l: notengline(l, t=t), reduced)
 
                 # Calculate how far we have parsed through the lines
-                distance = len(list(it.chain(english_lines, translation_lines)))
+                distance = len(english_lines + translation_lines)
                 indicies = list(range(i, i + distance))
 
                 # Append items to the list and mark lines as parsed
@@ -110,4 +113,4 @@ class Parser(object):
         return content.strip()
 
     def _normalize_items(self, items):
-        return [(k, v) for k, v in items if v]
+        return [(k, [*v.splitlines()]) for k, v in items if v]
