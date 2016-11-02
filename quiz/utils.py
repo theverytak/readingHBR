@@ -10,7 +10,7 @@ from .presets import (
 
 
 def noteng(c):
-    return c in ['—', ',', '[', ']', '(', ')', '\n', "'", '"', ' '] or \
+    return c in ['—', ',', '[', ']', '(', ')', '\n', "'", '"', ' ', '’'] or \
         c not in string.ascii_letters
 
 
@@ -18,7 +18,7 @@ def iseng(c):
     return c in ''.join(
         string.ascii_letters + 
         string.whitespace.replace('\n', '') +
-        string.punctuation.replace('~', '') + '—'
+        string.punctuation.replace('~', '') + '—' + '’'
     )
 
 
