@@ -113,4 +113,4 @@ class Parser(object):
         return content.strip()
 
     def _normalize_items(self, items):
-        return [(k, [*v.splitlines()]) for k, v in items if v]
+        return [(k, [*v.splitlines()]) for k, v in items if k and v]
